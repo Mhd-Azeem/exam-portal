@@ -47,10 +47,10 @@ ThemeData _lightTheme() => ThemeData(
           fontWeight: FontWeight.w700,
         ),
       ),
-      cardTheme: CardThemeData(
+      cardTheme: const CardTheme(
         color: AppColors.surface,
         elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
         margin: EdgeInsets.zero,
       ),
       inputDecorationTheme: InputDecorationTheme(

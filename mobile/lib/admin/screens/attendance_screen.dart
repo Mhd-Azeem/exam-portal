@@ -122,7 +122,7 @@ class _AttendanceTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(record.studentName,
+                  Text(record.studentName ?? '—',
                       style: const TextStyle(
                           fontWeight: FontWeight.w600, fontSize: 13)),
                   Text(
