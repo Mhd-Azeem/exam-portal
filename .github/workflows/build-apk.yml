@@ -26,6 +26,11 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Generate Android project scaffold
+        working-directory: mobile
+        run: |
+          flutter create --platforms android --project-name team_maestro --org com.teammaestro .
+
       - name: Install dependencies
         working-directory: mobile
         run: flutter pub get
