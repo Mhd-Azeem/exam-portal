@@ -1,59 +1,121 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'auth/auth_provider.dart';
-import 'auth/screens/login_screen.dart';
 import 'student/student_shell.dart';
 import 'admin/admin_shell.dart';
 import 'shared/theme/app_theme.dart';
 
-class ExamPortalApp extends ConsumerWidget {
+class ExamPortalApp extends StatelessWidget {
   const ExamPortalApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authProvider);
-
+  Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Team Maestro',
       debugShowCheckedModeBanner: false,
       theme: buildAppTheme(),
-      home: switch (authState.status) {
-        AuthStatus.unknown => const _SplashScreen(),
-        AuthStatus.unauthenticated => const LoginScreen(),
-        AuthStatus.authenticated => authState.role == 'admin'
-            ? const AdminShell()
-            : const StudentShell(),
-      },
+      home: const LandingScreen(),
     );
   }
 }
 
-class _SplashScreen extends StatelessWidget {
-  const _SplashScreen();
+class LandingScreen extends StatelessWidget {
+  const LandingScreen({super.key});
 
   @override
-  Widget build(BuildContext context) => const Scaffold(
-        backgroundColor: AppColors.primary,
-        body: Center(
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.primary,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.school, color: Colors.white, size: 56),
-              SizedBox(height: 16),
-              Text(
+              const Icon(Icons.school, color: Colors.white, size: 72),
+              const SizedBox(height: 16),
+              const Text(
                 'Team Maestro',
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
+                  fontSize: 28,
+                  fontWeight: FontWeight.w800,
                   letterSpacing: 0.5,
                 ),
               ),
-              SizedBox(height: 32),
-              CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation(Colors.white60)),
+              const SizedBox(height: 8),
+              const Text(
+                'A/L Exam Portal',
+                style: TextStyle(color: Colors.white60, fontSize: 15),
+              ),
+              const SizedBox(height: 64),
+              _PanelButton(
+                label: 'Student Panel',
+                icon: Icons.person_outline,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const StudentShell()),
+                ),
+              ),
+              const SizedBox(height: 16),
+              _PanelButton(
+                label: 'Admin Panel',
+                icon: Icons.admin_panel_settings_outlined,
+                filled: false,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AdminShell()),
+                ),
+              ),
             ],
           ),
         ),
-      );
+      ),
+    );
+  }
+}
+
+class _PanelButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool filled;
+  final VoidCallback onTap;
+
+  const _PanelButton({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+    this.filled = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 54,
+      child: filled
+          ? ElevatedButton.icon(
+              onPressed: onTap,
+              icon: Icon(icon, size: 20),
+              label: Text(label, style: const TextStyle(fontSize: 16)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: AppColors.primary,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                elevation: 0,
+              ),
+            )
+          : OutlinedButton.icon(
+              onPressed: onTap,
+              icon: Icon(icon, size: 20, color: Colors.white),
+              label: Text(label,
+                  style:
+                      const TextStyle(fontSize: 16, color: Colors.white)),
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: Colors.white54, width: 1.5),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+    );
+  }
 }

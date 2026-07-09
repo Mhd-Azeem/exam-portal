@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../shared/theme/app_theme.dart';
-import '../auth/auth_provider.dart';
 import 'screens/overview_screen.dart';
 import 'screens/students_screen.dart';
 import 'screens/subjects_screen.dart';
@@ -148,13 +147,12 @@ class _AdminShellState extends ConsumerState<AdminShell> {
               ),
               const Divider(height: 1),
               ListTile(
-                leading: const Icon(Icons.logout,
-                    color: AppColors.error, size: 20),
-                title: const Text('Logout',
-                    style: TextStyle(color: AppColors.error)),
-                onTap: () async {
-                  Navigator.of(context).pop();
-                  await ref.read(authProvider.notifier).logout();
+                leading: const Icon(Icons.arrow_back,
+                    color: AppColors.textSecondary, size: 20),
+                title: const Text('Back to Home'),
+                onTap: () {
+                  Navigator.of(context).pop(); // close drawer
+                  Navigator.of(context).pop(); // go back to landing
                 },
               ),
               const SizedBox(height: 8),
