@@ -1,6 +1,8 @@
 class AppConstants {
-  // Change this to your server's IP/domain when deploying
-  static const String baseUrl = 'http://localhost:5000';
+  static const String baseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'https://team-maestro-api.onrender.com',
+  );
   static const String apiBase = '$baseUrl/api';
 
   // Secure storage keys
