@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — {{ student.name }}{% endblock %}
+{% block body %}
+<div class="d-flex">
+  <nav class="sidebar d-flex flex-column">
+    <div class="brand"><i class="bi bi-mortarboard-fill"></i> Maestro</div>
+    <ul class="nav flex-column mt-2">
+      <li class="nav-item"><a href="{{ url_for('web_student.dashboard') }}" class="nav-link active"><i class="bi bi-grid"></i> Dashboard</a></li>
+      <li class="nav-item"><a href="{{ url_for('web_student.marks') }}" class="nav-link"><i class="bi bi-bar-chart"></i> Marks</a></li>
+      <li class="nav-item"><a href="{{ url_for('web_student.attendance') }}" class="nav-link"><i class="bi bi-calendar-check"></i> Attendance</a></li>
+      <li class="nav-item"><a href="{{ url_for('web_student.leaderboard') }}" class="nav-link"><i class="bi bi-trophy"></i> Leaderboard</a></li>
+      <li class="nav-item"><a href="{{ url_for('web_student.resources') }}" class="nav-link"><i class="bi bi-folder"></i> Resources</a></li>
+    </ul>
+    <div class="mt-auto p-3 border-top border-secondary">
+      <small class="d-block text-truncate">{{ student.index_number }}</small>
+      <a href="{{ url_for('web_auth.logout') }}" class="btn btn-sm btn-outline-secondary mt-2 w-100">Logout</a>
+    </div>
+  </nav>
+  <main class="main-content flex-grow-1">
+    <h5 class="fw-bold mb-1">Welcome back, {{ student.name.split()[0] }} 👋</h5>
+    <p class="text-muted small mb-4">{{ student.batch }} · {{ student.center }}</p>
+    <div class="row g-3 mb-4">
+      <div class="col-sm-6 col-lg-3">
+        <div class="card stat-card h-100">
+          <div class="card-body"><p class="text-muted small mb-1">Subjects</p><h3 class="fw-bold">{{ subjects_count }}</h3></div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="card stat-card h-100">
+          <div class="card-body"><p class="text-muted small mb-1">Average</p><h3 class="fw-bold">{{ average_pct }}%</h3></div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="card stat-card h-100">
+          <div class="card-body"><p class="text-muted small mb-1">Highest</p><h3 class="fw-bold">{{ highest_pct }}%</h3></div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="card stat-card h-100">
+          <div class="card-body"><p class="text-muted small mb-1">Best Grade</p><h3 class="fw-bold">{{ best_grade }}</h3></div>
+        </div>
+      </div>
+    </div>
+    <div class="row g-3 mb-4">
+      <div class="col-md-6">
+        <div class="card stat-card h-100">
+          <div class="card-body">
+            <h6 class="fw-semibold mb-3">Batch Rank</h6>
+            <div class="d-flex align-items-center gap-3">
+              <div class="fs-1 fw-bold text-primary">#{{ batch_rank }}</div>
+              <div class="text-muted small">out of {{ total_in_batch }} students<br>in {{ student.batch }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card stat-card h-100">
+          <div class="card-body">
+            <h6 class="fw-semibold mb-3">Upcoming Exams</h6>
+            {% if upcoming %}
+              {% for exam in upcoming %}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <div>
+                    <div class="fw-medium small">{{ exam.title }}</div>
+                    <div class="text-muted" style="font-size:.75rem">{{ exam.exam_date.strftime('%d %b %Y') if exam.exam_date else '—' }}</div>
+                  </div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <p class="text-muted small">No upcoming exams.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card stat-card">
+      <div class="card-body">
+        <h6 class="fw-semibold mb-3">Recent Marks</h6>
+        {% if recent_marks %}
+        <div class="table-responsive">
+          <table class="table table-sm table-hover mb-0">
+            <thead class="table-light"><tr><th>Subject</th><th>Type</th><th>Mark</th><th>%</th><th>Grade</th><th>Date</th></tr></thead>
+            <tbody>
+              {% for m in recent_marks %}
+              <tr>
+                <td>{{ m.subject.name if m.subject else '—' }}</td>
+                <td>{{ m.exam_type or '—' }}</td>
+                <td>{{ m.mark }}/{{ m.total_marks }}</td>
+                <td>{{ m.percentage }}%</td>
+                <td><span class="grade-badge grade-{{ m.grade }}">{{ m.grade }}</span></td>
+                <td>{{ m.date.strftime('%d %b') if m.date else '—' }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+          <p class="text-muted small">No marks recorded yet.</p>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="d-flex">
+  <nav class="sidebar d-flex flex-column">
+    <div class="brand"><i class="bi bi-shield-check"></i> Admin Panel</div>
+    <ul class="nav flex-column mt-2">
+      <li class="nav-item"><a href="{{ url_for('web_admin.dashboard') }}" class="nav-link {% block nav_overview %}{% endblock %}"><i class="bi bi-grid"></i> Overview</a></li>
+      <li class="nav-item"><a href="{{ url_for('web_admin.students') }}" class="nav-link {% block nav_students %}{% endblock %}"><i class="bi bi-people"></i> Students</a></li>
+      <li class="nav-item"><a href="{{ url_for('web_admin.subjects') }}" class="nav-link {% block nav_subjects %}{% endblock %}"><i class="bi bi-book"></i> Subjects</a></li>
+      <li class="nav-item"><a href="{{ url_for('web_admin.marks') }}" class="nav-link {% block nav_marks %}{% endblock %}"><i class="bi bi-bar-chart"></i> Marks</a></li>
+      <li class="nav-item"><a href="{{ url_for('web_admin.attendance') }}" class="nav-link {% block nav_attendance %}{% endblock %}"><i class="bi bi-calendar-check"></i> Attendance</a></li>
+      <li class="nav-item"><a href="{{ url_for('web_admin.resources') }}" class="nav-link {% block nav_resources %}{% endblock %}"><i class="bi bi-folder"></i> Resources</a></li>
+      <li class="nav-item"><a href="{{ url_for('web_admin.leaderboard') }}" class="nav-link {% block nav_leaderboard %}{% endblock %}"><i class="bi bi-trophy"></i> Leaderboard</a></li>
+    </ul>
+    <div class="mt-auto p-3 border-top border-secondary">
+      <small class="d-block text-muted mb-2">{{ session.get('admin_name','Admin') }}</small>
+      <a href="{{ url_for('web_auth.admin_logout') }}" class="btn btn-sm btn-outline-secondary w-100">Logout</a>
+    </div>
+  </nav>
+  <main class="main-content flex-grow-1">
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in msgs %}
+        <div class="alert alert-{{ cat }} alert-dismissible py-2 mb-3"><small>{{ msg }}</small>
+          <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button></div>
+      {% endfor %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+{% endblock %}

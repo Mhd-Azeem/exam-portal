@@ -1,0 +1,46 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Resources — Admin{% endblock %}
+{% block nav_resources %}active{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="fw-bold mb-0">Resources</h5>
+  <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal"><i class="bi bi-upload"></i> Upload</button>
+</div>
+<div class="row g-3">
+  {% for r in resources %}
+  <div class="col-md-6 col-lg-4">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="fw-semibold mb-1">{{ r.title }}</div>
+        {% if r.subject %}<span class="badge bg-light text-dark small">{{ r.subject.name }}</span>{% endif %}
+        {% if r.description %}<p class="text-muted small mt-2 mb-2">{{ r.description }}</p>{% endif %}
+        {% if r.url %}<a href="{{ r.url }}" target="_blank" class="btn btn-sm btn-outline-primary me-1">Open Link</a>{% endif %}
+        {% if r.file_name %}<span class="small text-muted"><i class="bi bi-paperclip"></i> {{ r.file_name }}</span>{% endif %}
+      </div>
+      <div class="card-footer d-flex justify-content-between align-items-center">
+        <small class="text-muted">{{ r.uploaded_at.strftime('%d %b %Y') if r.uploaded_at else '' }}</small>
+        <form method="POST" action="{{ url_for('web_admin.delete_resource', resource_id=r.id) }}" onsubmit="return confirm('Delete this resource?')">
+          <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="col-12"><p class="text-muted">No resources yet.</p></div>
+  {% endfor %}
+</div>
+
+<div class="modal fade" id="uploadModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title">Upload Resource</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <form method="POST" action="{{ url_for('web_admin.upload_resource') }}" enctype="multipart/form-data">
+    <div class="modal-body row g-3">
+      <div class="col-12"><label class="form-label small fw-semibold">Title *</label><input type="text" name="title" class="form-control" required></div>
+      <div class="col-12"><label class="form-label small fw-semibold">Subject</label><select name="subject_id" class="form-select"><option value="">—</option>{% for s in subjects %}<option value="{{ s.id }}">{{ s.name }}</option>{% endfor %}</select></div>
+      <div class="col-12"><label class="form-label small fw-semibold">Description</label><textarea name="description" class="form-control" rows="2"></textarea></div>
+      <div class="col-12"><label class="form-label small fw-semibold">File</label><input type="file" name="file" class="form-control"></div>
+      <div class="col-12"><label class="form-label small fw-semibold">Or External URL</label><input type="url" name="url" class="form-control" placeholder="https://…"></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-primary">Upload</button><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button></div>
+  </form>
+</div></div></div>
+{% endblock %}

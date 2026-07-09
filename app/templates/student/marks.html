@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}My Marks — Team Maestro{% endblock %}
+{% block body %}
+<div class="d-flex">
+  <nav class="sidebar d-flex flex-column">
+    <div class="brand"><i class="bi bi-mortarboard-fill"></i> Maestro</div>
+    <ul class="nav flex-column mt-2">
+      <li class="nav-item"><a href="{{ url_for('web_student.dashboard') }}" class="nav-link"><i class="bi bi-grid"></i> Dashboard</a></li>
+      <li class="nav-item"><a href="{{ url_for('web_student.marks') }}" class="nav-link active"><i class="bi bi-bar-chart"></i> Marks</a></li>
+      <li class="nav-item"><a href="{{ url_for('web_student.attendance') }}" class="nav-link"><i class="bi bi-calendar-check"></i> Attendance</a></li>
+      <li class="nav-item"><a href="{{ url_for('web_student.leaderboard') }}" class="nav-link"><i class="bi bi-trophy"></i> Leaderboard</a></li>
+      <li class="nav-item"><a href="{{ url_for('web_student.resources') }}" class="nav-link"><i class="bi bi-folder"></i> Resources</a></li>
+    </ul>
+    <div class="mt-auto p-3 border-top border-secondary">
+      <a href="{{ url_for('web_auth.logout') }}" class="btn btn-sm btn-outline-secondary w-100">Logout</a>
+    </div>
+  </nav>
+  <main class="main-content flex-grow-1">
+    <h5 class="fw-bold mb-3">My Marks</h5>
+    <form class="row g-2 mb-3" method="GET">
+      <div class="col-auto">
+        <select name="subject" class="form-select form-select-sm">
+          <option value="">All Subjects</option>
+          {% for s in subjects %}<option value="{{ s.id }}" {% if selected_subject == s.id|string %}selected{% endif %}>{{ s.name }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-auto">
+        <select name="exam_type" class="form-select form-select-sm">
+          <option value="">All Types</option>
+          {% for t in ['Paper 1','Paper 2','Mock','Term Test','Tutorial'] %}
+          <option value="{{ t }}" {% if selected_type == t %}selected{% endif %}>{{ t }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-auto"><button type="submit" class="btn btn-sm btn-primary">Filter</button></div>
+      <div class="col-auto"><a href="{{ url_for('web_student.marks') }}" class="btn btn-sm btn-outline-secondary">Clear</a></div>
+    </form>
+    <div class="card stat-card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-sm table-hover mb-0">
+            <thead class="table-light"><tr><th>Subject</th><th>Type</th><th>Pack</th><th>Mark</th><th>%</th><th>Grade</th><th>Date</th></tr></thead>
+            <tbody>
+              {% for m in marks %}
+              <tr>
+                <td>{{ m.subject.name if m.subject else '—' }}</td>
+                <td>{{ m.exam_type or '—' }}</td>
+                <td>{{ m.pack or '—' }}</td>
+                <td>{{ m.mark }}/{{ m.total_marks }}</td>
+                <td>{{ m.percentage }}%</td>
+                <td><span class="grade-badge grade-{{ m.grade }}">{{ m.grade }}</span></td>
+                <td>{{ m.date.strftime('%d %b %Y') if m.date else '—' }}</td>
+              </tr>
+              {% else %}
+              <tr><td colspan="7" class="text-center text-muted py-4">No marks found.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Student Login — Team Maestro{% endblock %}
+{% block body %}
+<div class="min-vh-100 d-flex align-items-center justify-content-center">
+  <div class="card shadow-sm" style="width:100%;max-width:400px">
+    <div class="card-body p-4">
+      <h4 class="fw-bold mb-1 text-center">Team Maestro</h4>
+      <p class="text-muted text-center mb-4 small">Exam Portal — Student Login</p>
+      {% with msgs = get_flashed_messages(with_categories=true) %}
+        {% for cat, msg in msgs %}
+          <div class="alert alert-{{ cat }} alert-dismissible py-2"><small>{{ msg }}</small>
+            <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button></div>
+        {% endfor %}
+      {% endwith %}
+      <form method="POST">
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">Index Number</label>
+          <input type="text" name="index_number" class="form-control" required placeholder="e.g. 2024001">
+        </div>
+        <div class="mb-4">
+          <label class="form-label small fw-semibold">Password</label>
+          <input type="password" name="password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Sign In</button>
+      </form>
+      <hr class="my-3">
+      <div class="text-center"><a href="{{ url_for('web_auth.admin_login') }}" class="small text-muted">Admin login →</a></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

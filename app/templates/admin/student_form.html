@@ -1,0 +1,49 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}{{ 'Edit' if student else 'New' }} Student — Admin{% endblock %}
+{% block nav_students %}active{% endblock %}
+{% block content %}
+<div class="d-flex align-items-center mb-3 gap-3">
+  <a href="{{ url_for('web_admin.students') }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left"></i></a>
+  <h5 class="fw-bold mb-0">{{ 'Edit Student' if student else 'New Student' }}</h5>
+</div>
+<div class="card stat-card" style="max-width:600px">
+  <div class="card-body">
+    <form method="POST">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Index Number *</label>
+          <input type="text" name="index_number" class="form-control" value="{{ student.index_number if student else '' }}" {% if student %}readonly{% endif %} required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Full Name *</label>
+          <input type="text" name="name" class="form-control" value="{{ student.name if student else '' }}" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Email</label>
+          <input type="email" name="email" class="form-control" value="{{ student.email if student else '' }}">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Phone</label>
+          <input type="text" name="phone" class="form-control" value="{{ student.phone if student else '' }}">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Batch</label>
+          <input type="text" name="batch" class="form-control" value="{{ student.batch if student else '' }}" placeholder="e.g. 2025">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Center</label>
+          <input type="text" name="center" class="form-control" value="{{ student.center if student else '' }}" placeholder="e.g. Colombo">
+        </div>
+        <div class="col-12">
+          <label class="form-label small fw-semibold">Password {% if student %}(leave blank to keep current){% else %}*{% endif %}</label>
+          <input type="password" name="password" class="form-control" {% if not student %}required{% endif %}>
+        </div>
+      </div>
+      <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn btn-primary">{{ 'Update' if student else 'Create' }}</button>
+        <a href="{{ url_for('web_admin.students') }}" class="btn btn-outline-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

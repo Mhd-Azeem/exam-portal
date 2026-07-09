@@ -1,0 +1,46 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Attendance — Admin{% endblock %}
+{% block nav_attendance %}active{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="fw-bold mb-0">Attendance</h5>
+  <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addAttModal"><i class="bi bi-plus"></i> Add Record</button>
+</div>
+<div class="card stat-card">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-sm table-hover mb-0">
+        <thead class="table-light"><tr><th>Student</th><th>Subject</th><th>Session</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for a in pagination.items %}
+          <tr>
+            <td>{{ a.student.name if a.student else '—' }}</td>
+            <td>{{ a.subject.name if a.subject else '—' }}</td>
+            <td>{{ a.session_name or '—' }}</td>
+            <td>{{ a.date.strftime('%d %b %Y') if a.date else '—' }}</td>
+            <td><span class="badge bg-{{ 'success' if a.is_present else 'danger' }}">{{ 'Present' if a.is_present else 'Absent' }}</span></td>
+          </tr>
+          {% else %}
+          <tr><td colspan="5" class="text-center text-muted py-4">No records.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addAttModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title">Add Attendance</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <form method="POST" action="{{ url_for('web_admin.add_attendance') }}">
+    <div class="modal-body row g-3">
+      <div class="col-12"><label class="form-label small fw-semibold">Student *</label><select name="student_id" class="form-select" required><option value="">—</option>{% for s in students %}<option value="{{ s.id }}">{{ s.name }} ({{ s.index_number }})</option>{% endfor %}</select></div>
+      <div class="col-12"><label class="form-label small fw-semibold">Subject *</label><select name="subject_id" class="form-select" required><option value="">—</option>{% for s in subjects %}<option value="{{ s.id }}">{{ s.name }}</option>{% endfor %}</select></div>
+      <div class="col-6"><label class="form-label small fw-semibold">Session Name</label><input type="text" name="session_name" class="form-control" placeholder="e.g. Paper 1 Mock"></div>
+      <div class="col-6"><label class="form-label small fw-semibold">Exam Type</label><select name="exam_type" class="form-select"><option value="">—</option>{% for t in ['Paper 1','Paper 2','Mock','Term Test'] %}<option>{{ t }}</option>{% endfor %}</select></div>
+      <div class="col-6"><label class="form-label small fw-semibold">Date</label><input type="date" name="date" class="form-control"></div>
+      <div class="col-6"><label class="form-label small fw-semibold">Status</label><select name="is_present" class="form-select"><option value="true">Present</option><option value="false">Absent</option></select></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-primary">Add</button><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button></div>
+  </form>
+</div></div></div>
+{% endblock %}
