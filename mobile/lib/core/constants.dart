@@ -1,7 +1,7 @@
 class AppConstants {
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'https://team-maestro-api.onrender.com',
+    defaultValue: 'https://azeemmhd1105.pythonanywhere.com',
   );
   static const String apiBase = '$baseUrl/api';
 
