@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'student/student_shell.dart';
-import 'admin/admin_shell.dart';
+import 'shared/screens/login_screen.dart';
 import 'shared/theme/app_theme.dart';
 
 class ExamPortalApp extends StatelessWidget {
@@ -52,7 +51,7 @@ class LandingScreen extends StatelessWidget {
                 icon: Icons.person_outline,
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const StudentShell()),
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
                 ),
               ),
               const SizedBox(height: 16),
@@ -62,7 +61,7 @@ class LandingScreen extends StatelessWidget {
                 filled: false,
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const AdminShell()),
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
                 ),
               ),
             ],
