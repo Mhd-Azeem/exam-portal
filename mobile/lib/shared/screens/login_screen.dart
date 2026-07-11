@@ -59,10 +59,18 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
     } on DioException catch (e) {
-      final msg = e.response?.data?['message'] as String? ?? 'Login failed';
+      final body = e.response?.data;
+      String msg;
+      if (e.response == null) {
+        msg = 'No response: ${e.message}';
+      } else if (body is Map) {
+        msg = body['message'] as String? ?? 'Error ${e.response!.statusCode}';
+      } else {
+        msg = 'Error ${e.response?.statusCode}: ${body.toString().substring(0, (body.toString().length).clamp(0, 80))}';
+      }
       setState(() => _error = msg);
-    } catch (_) {
-      setState(() => _error = 'Network error. Please try again.');
+    } catch (e) {
+      setState(() => _error = 'Exception: $e');
     } finally {
       if (mounted) setState(() => _loading = false);
     }
