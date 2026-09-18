@@ -1,0 +1,47 @@
+name: Build Windows DeX
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "claude/maestro-unified-mobile-app-c6hcjq"
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install -r requirements.txt pyinstaller
+      - name: Download Android platform tools
+        shell: pwsh
+        run: |
+          Invoke-WebRequest https://dl.google.com/android/repository/platform-tools-latest-windows.zip -OutFile platform.zip
+          Expand-Archive platform.zip -DestinationPath temp
+          New-Item -ItemType Directory -Force tools
+          Copy-Item temp/platform-tools/adb.exe,temp/platform-tools/AdbWinApi.dll,temp/platform-tools/AdbWinUsbApi.dll tools/
+      - name: Download scrcpy
+        shell: pwsh
+        run: |
+          $rel=Invoke-RestMethod https://api.github.com/repos/Genymobile/scrcpy/releases/latest
+          $asset=$rel.assets | Where-Object {$_.name -match 'win64.*zip$'} | Select-Object -First 1
+          Invoke-WebRequest $asset.browser_download_url -OutFile scrcpy.zip
+          Expand-Archive scrcpy.zip -DestinationPath scr
+          $dir=Get-ChildItem scr -Directory | Select-Object -First 1
+          Copy-Item "$($dir.FullName)/*" tools/ -Recurse -Force
+      - name: Build executable
+        run: pyinstaller --noconfirm --clean --onefile --windowed --name "Azeem-DeX-v1" --add-data "tools;tools" src/main.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Azeem-DeX-v1-Windows
+          path: dist/Azeem-DeX-v1.exe
+      - name: Publish rolling release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete v1-latest --cleanup-tag -y 2>$null
+          gh release create v1-latest dist/Azeem-DeX-v1.exe --title "Azeem DeX v1" --notes "Windows Version 1: USB/Wi-Fi ADB, scrcpy phone control, APK installer and device detection." --latest
